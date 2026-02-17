@@ -1,0 +1,105 @@
+import random
+
+# -------------------------------
+# GAME DATA
+# -------------------------------
+
+suspects = ["Butler", "Wife", "Business Partner"]
+locations = ["Library", "Garden", "Office"]
+
+clues_data = {
+    "Butler": [
+        "Seen near the crime scene.",
+        "Financial problems recently.",
+        "Fingerprint on the weapon."
+    ],
+    "Wife": [
+        "Huge life insurance policy.",
+        "Heated argument last night.",
+        "Secret phone calls."
+    ],
+    "Business Partner": [
+        "Business deal gone wrong.",
+        "Threat messages found.",
+        "Was last to see victim alive."
+    ]
+}
+
+# -------------------------------
+# GAME FUNCTIONS
+# -------------------------------
+
+def play_case(case_number):
+    print(f"\n🔎 CASE {case_number}")
+    print("-" * 30)
+
+    killer = random.choice(suspects)
+    location = random.choice(locations)
+
+    print(f"📍 Crime Location: {location}")
+    print("\n🧩 Investigating clues...")
+
+    clues = random.sample(clues_data[killer], 2)
+    for clue in clues:
+        print(" -", clue)
+
+    print("\n👥 Suspects:")
+    for s in suspects:
+        print("-", s)
+
+    guess = input("\n🚨 Who do you arrest? ")
+
+    if guess == killer:
+        print("🏆 Correct! You solved the case!")
+        return True
+    else:
+        print(f"❌ Wrong! The killer was {killer}.")
+        return False
+
+
+def serial_killer_mode():
+    print("\n🔥 SERIAL KILLER MODE ACTIVATED 🔥")
+    print("You must solve 3 cases in a row!")
+    print("You have 2 lives.\n")
+
+    lives = 2
+    score = 0
+
+    for case in range(1, 4):
+        result = play_case(case)
+
+        if result:
+            score += 1
+        else:
+            lives -= 1
+            print(f"💔 Lives left: {lives}")
+
+        if lives == 0:
+            print("\n☠️ Game Over. The serial killer escaped!")
+            return
+
+    print("\n🎉 You stopped the serial killer!")
+    print(f"⭐ Final Score: {score}/3")
+
+
+# -------------------------------
+# MAIN GAME LOOP
+# -------------------------------
+
+def main():
+    print("🕵️ WELCOME TO ULTIMATE DETECTIVE GAME 🕵️")
+    print("1️⃣ Single Case Mode")
+    print("2️⃣ Serial Killer Mode")
+
+    mode = input("Choose mode (1 or 2): ")
+
+    if mode == "1":
+        play_case(1)
+    elif mode == "2":
+        serial_killer_mode()
+    else:
+        print("Invalid choice.")
+
+
+if __name__ == "__main__":
+    main()
