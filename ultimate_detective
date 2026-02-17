@@ -1,0 +1,200 @@
+import random
+import json
+import os
+
+SAVE_FILE = "detective_save.json"
+leaderboard = []
+
+suspects = ["Butler", "Wife", "Business Partner"]
+locations = ["Library", "Garden", "Office"]
+
+clues_data = {
+    "Butler": [
+        "Seen near the crime scene.",
+        "Financial problems recently.",
+        "Fingerprint on the weapon."
+    ],
+    "Wife": [
+        "Huge life insurance policy.",
+        "Heated argument last night.",
+        "Secret phone calls."
+    ],
+    "Business Partner": [
+        "Business deal gone wrong.",
+        "Threat messages found.",
+        "Was last to see victim alive."
+    ]
+}
+
+# -------------------------------
+# INTRO
+# -------------------------------
+
+def cinematic_intro():
+    print("\n🌙 The city sleeps...")
+    print("A scream echoes through the night.")
+    print("Another murder. Another mystery.")
+    print("You are Detective Arjun.")
+    print("And this... is personal.\n")
+
+# -------------------------------
+# SAVE / LOAD
+# -------------------------------
+
+def save_game(data):
+    with open(SAVE_FILE, "w") as f:
+        json.dump(data, f)
+
+def load_game():
+    if os.path.exists(SAVE_FILE):
+        with open(SAVE_FILE, "r") as f:
+            return json.load(f)
+    return None
+
+# -------------------------------
+# RANKING
+# -------------------------------
+
+def ranking(score):
+    if score >= 200:
+        return "Legendary Detective 🏆"
+    elif score >= 150:
+        return "Master Investigator 🥇"
+    elif score >= 100:
+        return "Skilled Detective 🥈"
+    else:
+        return "Rookie Investigator 🥉"
+
+# -------------------------------
+# MAIN CASE ENGINE
+# -------------------------------
+
+def play_case(case_number, health, total_score):
+    print(f"\n🔎 CASE {case_number}")
+    print("-" * 40)
+
+    killer = random.choice(suspects)
+    location = random.choice(locations)
+    suspicion = {s: 0 for s in suspects}
+    moves = 4
+
+    print(f"📍 Crime Location: {location}")
+
+    while moves > 0 and health > 0:
+        print("\nChoose Action:")
+        print("1. Investigate Crime Scene")
+        print("2. Interrogate Suspects")
+        print("3. Search Secret Safe")
+        print("4. Reveal Random Clue")
+
+        choice = input("Enter choice: ")
+
+        if choice == "1":
+            found = random.choice(suspects)
+            suspicion[found] += 2
+            print(f"Clue found pointing to {found}")
+            total_score += 15
+
+        elif choice == "2":
+            for s in suspects:
+                suspicion[s] += random.randint(0, 2)
+            print("Interrogation done.")
+            total_score += 10
+
+        elif choice == "3":
+            code = input("Enter safe code (1234): ")
+            if code == "1234":
+                suspect = random.choice(suspects)
+                suspicion[suspect] += 3
+                print("Safe opened! Major clue found.")
+                total_score += 25
+            else:
+                print("Wrong code! Alarm triggered.")
+                health -= 1
+
+        elif choice == "4":
+            clue = random.choice(clues_data[killer])
+            print("Clue:", clue)
+            total_score += 10
+
+        else:
+            print("Invalid choice.")
+
+        moves -= 1
+        print("Suspicion Levels:", suspicion)
+        print("Health:", health)
+        print("Moves Left:", moves)
+
+    guess = input("\n🚨 Who is the killer? ").title()
+
+    if guess == killer:
+        print("🏆 Case Solved!")
+        total_score += 50
+    else:
+        print("❌ Wrong! Killer was", killer)
+        health -= 1
+
+    return health, total_score
+
+# -------------------------------
+# SERIAL MODE
+# -------------------------------
+
+def serial_killer_mode():
+    total_score = 0
+    health = 3
+    cases = 3
+
+    print("\n🔥 SERIAL KILLER MODE ACTIVATED 🔥")
+    print("Solve 3 connected cases to stop the killer.\n")
+
+    for case in range(1, cases + 1):
+        health, total_score = play_case(case, health, total_score)
+
+        if health <= 0:
+            print("\n💀 You failed the investigation.")
+            return total_score
+
+    print("\n🎉 Serial Killer Captured!")
+    return total_score
+
+# -------------------------------
+# MAIN MENU
+# -------------------------------
+
+def main():
+    cinematic_intro()
+
+    while True:
+        print("\n===== DETECTIVE HQ =====")
+        print("1. Serial Killer Mode")
+        print("2. Load Last Score")
+        print("3. Exit")
+
+        choice = input("Choose option: ")
+
+        if choice == "1":
+            score = serial_killer_mode()
+            print("\nFinal Score:", score)
+            print("Rank:", ranking(score))
+
+            leaderboard.append(score)
+            print("🏆 Leaderboard (Session):", sorted(leaderboard, reverse=True))
+
+            save_game({"last_score": score})
+
+        elif choice == "2":
+            data = load_game()
+            if data:
+                print("Last Saved Score:", data["last_score"])
+            else:
+                print("No saved data found.")
+
+        elif choice == "3":
+            print("Goodbye Detective 🕵️")
+            break
+        else:
+            print("Invalid choice.")
+
+if __name__ == "__main__":
+    main()
