@@ -1,0 +1,85 @@
+def detective_game():
+    health = 3
+    inventory = []
+
+    print("\n🕵️ THE MIDNIGHT CASE")
+    print("You are Detective Arjun. A murder happened in an old mansion.")
+    print("Find the killer before it's too late...\n")
+
+    # Scene 1
+    print("You enter the mansion hall.")
+    print("1. Inspect the body")
+    print("2. Check the bookshelf")
+
+    choice = input("Choose (1/2): ")
+
+    if choice == "1":
+        print("\nYou found a strange key in the victim's pocket.")
+        inventory.append("rusty key")
+    elif choice == "2":
+        print("\nA hidden knife falls and injures you!")
+        health -= 1
+        print("Health remaining:", health)
+    else:
+        print("Invalid choice. You hesitate and lose time.")
+
+    # Scene 2
+    print("\nYou hear a noise upstairs.")
+    print("1. Go upstairs")
+    print("2. Check the basement")
+
+    choice = input("Choose (1/2): ")
+
+    if choice == "1":
+        print("\nYou see a shadow running.")
+        if "rusty key" in inventory:
+            print("You unlock a locked room and find secret documents!")
+            inventory.append("evidence")
+        else:
+            print("The door is locked. You need a key.")
+    elif choice == "2":
+        print("\nThe basement is dark. You fall and hurt yourself.")
+        health -= 1
+        print("Health remaining:", health)
+    else:
+        print("You freeze. Time passes...")
+
+    # Scene 3
+    print("\nYou confront the main suspect in the study room.")
+    print("1. Accuse immediately")
+    print("2. Show evidence first")
+
+    choice = input("Choose (1/2): ")
+
+    if choice == "1":
+        if "evidence" in inventory:
+            print("\nThe suspect panics and confesses!")
+            print("🏆 YOU SOLVED THE CASE!")
+        else:
+            print("\nYou have no proof. The suspect attacks you!")
+            health -= 2
+    elif choice == "2":
+        if "evidence" in inventory:
+            print("\nWith solid proof, the suspect confesses.")
+            print("🏆 YOU SOLVED THE CASE!")
+        else:
+            print("\nYou have no evidence. The suspect escapes!")
+    else:
+        print("You hesitate too long.")
+
+    # Ending
+    if health <= 0:
+        print("\n💀 You lost too much health.")
+        print("GAME OVER.")
+    else:
+        print("\nGame finished.")
+        print("Final Health:", health)
+        print("Inventory:", inventory)
+
+# Restart Loop
+while True:
+    detective_game()
+    again = input("\nPlay again? (y/n): ").lower()
+    if again != "y":
+        print("Thanks for playing 🕵️‍♂️")
+        break
