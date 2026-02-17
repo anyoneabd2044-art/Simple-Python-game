@@ -1,0 +1,176 @@
+import random
+
+def version1():
+    health = 3
+    inventory = []
+    score = 0
+
+    print("\n🕵️ VERSION 1 – STORY MODE")
+
+    print("You enter the mansion.")
+    print("1. Inspect body")
+    print("2. Search bookshelf")
+    choice = input("Choose: ")
+
+    if choice == "1":
+        print("You found a key.")
+        inventory.append("key")
+        score += 10
+    else:
+        print("You triggered a trap.")
+        health -= 1
+
+    if "key" in inventory:
+        print("You unlock a room and find evidence.")
+        inventory.append("evidence")
+        score += 20
+
+    print("You confront suspect.")
+    if "evidence" in inventory:
+        print("🏆 Case Solved!")
+        score += 30
+    else:
+        print("No proof. You failed.")
+        health -= 2
+
+    print("Health:", health)
+    print("Score:", score)
+
+
+def version2():
+    health = 3
+    moves = 6
+    score = 0
+    inventory = []
+
+    suspects = ["Butler", "Wife", "Partner"]
+    killer = random.choice(suspects)
+
+    rooms = ["hall", "kitchen", "study", "basement"]
+
+    print("\n🕵️ VERSION 2 – INVESTIGATION MODE")
+
+    while moves > 0 and health > 0:
+        print("\nRooms:", rooms)
+        room = input("Choose room: ").lower()
+
+        if room not in rooms:
+            print("Invalid room.")
+            continue
+
+        moves -= 1
+
+        if room == "kitchen":
+            print("Found bloody knife.")
+            inventory.append("knife")
+            score += 15
+        elif room == "study":
+            print("Found secret documents.")
+            inventory.append("documents")
+            score += 20
+        elif room == "basement":
+            print("You slipped!")
+            health -= 1
+        else:
+            print("Nothing useful.")
+
+        print("Moves left:", moves)
+        print("Health:", health)
+
+    print("\nSuspects:", suspects)
+    guess = input("Who is the killer? ").title()
+
+    if guess == killer and len(inventory) >= 2:
+        print("🏆 Perfect Investigation!")
+        score += 50
+    elif guess == killer:
+        print("Correct guess but weak evidence.")
+        score += 20
+    else:
+        print("Wrong! Killer was:", killer)
+
+    print("Score:", score)
+
+
+def version3():
+    health = 3
+    score = 0
+    suspicion = {
+        "Butler": 0,
+        "Wife": 0,
+        "Partner": 0
+    }
+
+    killer = random.choice(list(suspicion.keys()))
+
+    print("\n🕵️ VERSION 3 – PSYCHOLOGICAL THRILLER MODE")
+
+    print("\n🔐 You find a locked safe.")
+    password = "4312"
+    attempt = input("Enter 4-digit password: ")
+
+    if attempt == password:
+        print("Safe opened! You found financial records.")
+        score += 20
+        suspicion["Partner"] += 2
+    else:
+        print("Wrong password! Alarm triggered.")
+        health -= 1
+
+    print("\n🧩 RIDDLE:")
+    print("I speak without a mouth and hear without ears. What am I?")
+    answer = input("Your answer: ").lower()
+
+    if "echo" in answer:
+        print("Correct! Hidden clue revealed.")
+        score += 20
+        suspicion["Wife"] += 2
+    else:
+        print("Wrong answer.")
+        health -= 1
+
+    print("\n🎭 Interrogation Phase")
+    for person in suspicion:
+        print(f"Interrogating {person}...")
+        suspicion[person] += random.randint(0, 2)
+
+    print("\nSuspicion Levels:")
+    for person, value in suspicion.items():
+        print(person, ":", value)
+
+    guess = input("\nWho do you arrest? ").title()
+
+    if guess == killer:
+        print("🏆 You caught the real killer!")
+        score += 50
+    else:
+        print("❌ Wrong arrest. Killer was:", killer)
+        health -= 1
+
+    print("\nFinal Health:", health)
+    print("Final Score:", score)
+
+
+def main():
+    while True:
+        print("\n===== DETECTIVE GAME MENU =====")
+        print("1. Version 1 – Story Mode")
+        print("2. Version 2 – Investigation Mode")
+        print("3. Version 3 – Thriller Mode")
+        print("4. Exit")
+
+        choice = input("Choose option: ")
+
+        if choice == "1":
+            version1()
+        elif choice == "2":
+            version2()
+        elif choice == "3":
+            version3()
+        elif choice == "4":
+            print("Goodbye Detective 🕵️")
+            break
+        else:
+            print("Invalid option.")
+
+main()
