@@ -1,0 +1,126 @@
+import random
+
+def version1():
+    health = 3
+    inventory = []
+    score = 0
+
+    print("\n🕵️ VERSION 1: THE MIDNIGHT CASE")
+
+    print("\nYou enter the mansion hall.")
+    print("1. Inspect body")
+    print("2. Check bookshelf")
+    choice = input("Choose: ")
+
+    if choice == "1":
+        print("You found a rusty key.")
+        inventory.append("key")
+        score += 10
+    else:
+        print("A knife falls and injures you.")
+        health -= 1
+
+    print("\nYou go upstairs.")
+    if "key" in inventory:
+        print("You unlock a room and find evidence.")
+        inventory.append("evidence")
+        score += 20
+    else:
+        print("Door locked. No evidence found.")
+
+    print("\nYou confront the suspect.")
+    if "evidence" in inventory:
+        print("🏆 Case Solved!")
+        score += 30
+    else:
+        print("No proof. Suspect escapes.")
+        health -= 2
+
+    print("\nFinal Health:", health)
+    print("Score:", score)
+
+
+def version2():
+    health = 3
+    inventory = []
+    score = 0
+    moves = 7
+
+    suspects = ["Butler", "Wife", "Business Partner"]
+    killer = random.choice(suspects)
+
+    rooms = {
+        "hall": "You see the victim's body.",
+        "kitchen": "There is a bloody knife.",
+        "study": "Secret documents are hidden here.",
+        "basement": "Dark and scary place."
+    }
+
+    print("\n🕵️ VERSION 2: ADVANCED INVESTIGATION")
+    print("Find clues and identify the killer!")
+
+    while moves > 0 and health > 0:
+        print("\nRooms:", list(rooms.keys()))
+        room = input("Choose room: ").lower()
+
+        if room not in rooms:
+            print("Invalid room.")
+            continue
+
+        print(rooms[room])
+        moves -= 1
+
+        if room == "kitchen":
+            print("You found a knife with fingerprints.")
+            inventory.append("fingerprint")
+            score += 15
+
+        elif room == "study":
+            print("You found secret financial documents.")
+            inventory.append("documents")
+            score += 20
+
+        elif room == "basement":
+            print("You fall and hurt yourself.")
+            health -= 1
+
+        print("Moves left:", moves)
+        print("Health:", health)
+
+    print("\n🎭 Suspects:", suspects)
+    guess = input("Who is the killer? ").title()
+
+    if guess == killer and len(inventory) >= 2:
+        print("🏆 Correct! You solved the case!")
+        score += 50
+    elif guess == killer:
+        print("You guessed right but lacked evidence.")
+        score += 20
+    else:
+        print("❌ Wrong guess. The killer was:", killer)
+
+    print("\nFinal Score:", score)
+    print("Health:", health)
+    print("Clues Collected:", inventory)
+
+
+def main():
+    while True:
+        print("\n===== DETECTIVE GAME MENU =====")
+        print("1. Version 1 (Story Mode)")
+        print("2. Version 2 (Advanced Mode)")
+        print("3. Exit")
+
+        choice = input("Choose option: ")
+
+        if choice == "1":
+            version1()
+        elif choice == "2":
+            version2()
+        elif choice == "3":
+            print("Goodbye Detective 🕵️")
+            break
+        else:
+            print("Invalid choice.")
+
+main()
